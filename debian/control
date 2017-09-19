@@ -2,13 +2,13 @@ Source: dlmodelbox
 Section: science
 Priority: optional
 Maintainer: DT42 <contact@dt42.io>
-Build-Depends: debhelper (>= 9.0.0)
+Build-Depends: debhelper (>= 9.0.0), python3 (>= 3.4)
 Standards-Version: 3.9.5
 Homepage: http://dt42.io
 
 Package: dlmodelbox
 Architecture: all
-Depends: ${misc:Depends}
+Depends: ${python3:Depends}, ${misc:Depends}
 Description: Swiss Army Knife of Deep Learning Models
  DLModelBox provides utilities to help create and manage DL model
  packages.
