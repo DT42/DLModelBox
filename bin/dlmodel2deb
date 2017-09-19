@@ -1,0 +1,74 @@
+#!/usr/bin/python3
+
+import argparse
+import json
+import os
+import subprocess
+
+
+def create_debianization():
+    cmd = (
+        'dh_make -n -i -y;'
+        'cd debian;'
+        'rm *ex *EX README.*;'
+        'cd ..'
+    )
+    subprocess.call(cmd, shell=True)
+
+
+def create_install(work_dirpath):
+    with open(os.path.join(work_dirpath, 'meta.json'), 'r') as f:
+        meta = json.load(f)
+    print('meta: {}'.format(meta))
+
+    with open('debian/install', 'w') as f:
+        package_name = meta['name'] + '-' + meta['version']
+        package_dirpath = os.path.join('/etc/dlmodels', package_name)
+
+        # add meta
+        f.write('{meta} {pkgdir}\n'.format(
+            meta='meta.json',
+            pkgdir=package_dirpath))
+
+        # add model
+        f.write('{model} {pkgdir}\n'.format(
+            model=meta['model'],
+            pkgdir=package_dirpath))
+
+        # add label
+        f.write('{label} {pkgdir}/assets\n'.format(
+            label=meta['label'],
+            pkgdir=package_dirpath))
+
+        # add config(s)
+        f.write('{config} {pkgdir}/assets\n'.format(
+            config=meta['config'],
+            pkgdir=package_dirpath))
+
+    #install_dirpath = 'etc/dlmodels/{}'.format(model_dirname)
+    #cmd = ''
+    #subprocess.call(cmd, shell=True)
+
+
+def build_debian_binary_package():
+    cmd = 'debuild -us -uc'
+    subprocess.call(cmd, shell=True)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('modeldir_path', help='DL model directory path')
+    args = parser.parse_args()
+
+    #work_dirpath = os.path.dirname(args.modeldir_path)
+    work_dirpath = args.modeldir_path
+    model_name, model_version = os.path.basename(args.modeldir_path).split('-')
+
+    os.chdir(work_dirpath)
+    create_debianization()
+    create_install(work_dirpath)
+    build_debian_binary_package()
+
+
+if __name__ == '__main__':
+    main()

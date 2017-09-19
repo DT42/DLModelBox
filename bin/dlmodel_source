@@ -1,0 +1,93 @@
+#!/usr/bin/python3
+
+import hashlib
+import json
+import os
+import shutil
+import subprocess
+
+
+def get_sha256(filepath):
+    bufsize = 65536
+    sha256 = hashlib.sha256()
+    with open(filepath, 'rb') as f:
+        while True:
+            data = f.read(bufsize)
+            if not data:
+                break
+            sha256.update(data)
+    print(sha256.hexdigest())
+    return sha256.hexdigest()
+
+
+def get_meta():
+    inference_engine_names = {
+        1: 'tensorflow',
+        2: 'keras',
+        3: 'caffe2',
+        4: 'pytorch',
+        5: 'darknet',
+        6: 'caffe',
+        7: 'mxnet',
+        9: 'other'
+    }
+    # model, label, config are full paths for copying them into
+    # target package directory.  They will be updated to relative paths
+    # in the model package.
+    meta = {}
+    meta['name'] = input('Package name: ')
+    meta['version'] = input('Package version: ')
+    meta['model'] = os.path.abspath(input('Model filepath: '))
+    meta['label'] = os.path.abspath(input('Label filepath: '))
+    meta['config'] = os.path.abspath(input('Config filepath (enter if none): '))
+    engine_index = int(input(
+        (
+            'Inference engine\n'
+            '\t1. TensorFlow  2. Keras  3. Caffe2  4. PyTorch\n'
+            '\t5. Darknet     6. Caffe  7. MXNet   9. Other\n'
+            ': '
+        )
+    ))
+    meta['inference-engine'] = inference_engine_names[engine_index]
+    return meta
+
+
+def create_metafile(meta, package_dirpath):
+    """Create DL model package meta file (meta.json)
+    """
+    checksums = {}
+    for cksum_key in ['model', 'label', 'config']:
+        target_path = os.path.join(package_dirpath, meta[cksum_key])
+        checksums[meta[cksum_key]] = get_sha256(target_path)
+    meta['checksums-sha256'] = checksums
+
+    with open(os.path.join(package_dirpath, 'meta.json'), 'w') as f:
+        json.dump(meta, f, indent=4)
+
+
+def create_source_package(meta):
+    # copy model contents to model package directory
+    package_name = meta['name'] + '-' + meta['version']
+    package_dirpath = os.path.join('/tmp', package_name)
+    subprocess.call(
+        'mkdir -p {pkgdir}/assets'.format(pkgdir=package_dirpath),
+        shell=True)
+    shutil.copy2(meta['model'], package_dirpath)
+    shutil.copy2(meta['label'], os.path.join(package_dirpath, 'assets'))
+    shutil.copy2(meta['config'], os.path.join(package_dirpath, 'assets'))
+    # update full paths to relative paths in the model package directory
+    meta['model'] = os.path.basename(meta['model'])
+    meta['label'] = os.path.join('assets', os.path.basename(meta['label']))
+    meta['config'] = os.path.join('assets', os.path.basename(meta['config']))
+    # create model description file (meta.json)
+    create_metafile(meta, package_dirpath)
+
+
+def main():
+    meta = get_meta()
+    create_source_package(meta)
+
+
+if __name__ == '__main__':
+    # TODO: capture ctrl+c and confirm exit or not
+    main()
