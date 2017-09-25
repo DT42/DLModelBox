@@ -23,7 +23,7 @@ def create_install(work_dirpath):
 
     with open('debian/install', 'w') as f:
         package_name = meta['name'] + '-' + meta['version']
-        package_dirpath = os.path.join('/etc/dlmodels', package_name)
+        package_dirpath = os.path.join('/var/lib/dlmodels', package_name)
 
         # add meta
         f.write('{meta} {pkgdir}\n'.format(
