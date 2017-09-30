@@ -61,7 +61,7 @@ def main():
     args = parser.parse_args()
 
     #work_dirpath = os.path.dirname(args.modeldir_path)
-    work_dirpath = args.modeldir_path
+    work_dirpath = os.path.abspath(args.modeldir_path)
     model_name, model_version = os.path.basename(args.modeldir_path).split('-')
 
     os.chdir(work_dirpath)
