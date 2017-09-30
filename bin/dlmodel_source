@@ -1,10 +1,21 @@
 #!/usr/bin/python3
 
+import glob
 import hashlib
 import json
 import os
+import readline
 import shutil
 import subprocess
+
+
+def init_cli():
+    def complete(text, state):
+        return (glob.glob(text+'*')+[None])[state]
+
+    readline.set_completer_delims(' \t\n;')
+    readline.parse_and_bind("tab: complete")
+    readline.set_completer(complete)
 
 
 def get_sha256(filepath):
@@ -84,6 +95,7 @@ def create_source_package(meta):
 
 
 def main():
+    init_cli()
     meta = get_meta()
     create_source_package(meta)
 
