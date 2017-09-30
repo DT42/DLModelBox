@@ -46,11 +46,18 @@ def get_meta():
     # target package directory.  They will be updated to relative paths
     # in the model package.
     meta = {}
+    config_files = []
     meta['name'] = input('Package name: ')
     meta['version'] = input('Package version: ')
     meta['model'] = os.path.abspath(input('Model filepath: '))
     meta['label'] = os.path.abspath(input('Label filepath: '))
-    meta['config'] = os.path.abspath(input('Config filepath (enter if none): '))
+    while True:
+        config_file = input('Config filepath (press enter directly to stop): ')
+        if len(config_file) != 0:
+            config_files.append(os.path.abspath(config_file))
+        else:
+            break
+    meta['config'] = config_files
     engine_index = int(input(
         (
             'Inference engine\n'
@@ -67,9 +74,12 @@ def create_metafile(meta, package_dirpath):
     """Create DL model package meta file (meta.json)
     """
     checksums = {}
-    for cksum_key in ['model', 'label', 'config']:
+    for cksum_key in ['model', 'label']:
         target_path = os.path.join(package_dirpath, meta[cksum_key])
         checksums[meta[cksum_key]] = get_sha256(target_path)
+    for config in meta['config']:
+        target_path = os.path.join(package_dirpath, config)
+        checksums[config] = get_sha256(target_path)
     meta['checksums-sha256'] = checksums
 
     with open(os.path.join(package_dirpath, 'meta.json'), 'w') as f:
@@ -85,11 +95,15 @@ def create_source_package(meta):
         shell=True)
     shutil.copy2(meta['model'], package_dirpath)
     shutil.copy2(meta['label'], os.path.join(package_dirpath, 'assets'))
-    shutil.copy2(meta['config'], os.path.join(package_dirpath, 'assets'))
+    for filepath in meta['config']:
+        shutil.copy2(filepath, os.path.join(package_dirpath, 'assets'))
     # update full paths to relative paths in the model package directory
     meta['model'] = os.path.basename(meta['model'])
     meta['label'] = os.path.join('assets', os.path.basename(meta['label']))
-    meta['config'] = os.path.join('assets', os.path.basename(meta['config']))
+    meta['config'] = [
+        os.path.join('assets', os.path.basename(filepath))
+        for filepath in meta['config']
+    ]
     # create model description file (meta.json)
     create_metafile(meta, package_dirpath)
 

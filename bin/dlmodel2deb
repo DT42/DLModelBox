@@ -41,13 +41,10 @@ def create_install(work_dirpath):
             pkgdir=package_dirpath))
 
         # add config(s)
-        f.write('{config} {pkgdir}/assets\n'.format(
-            config=meta['config'],
-            pkgdir=package_dirpath))
-
-    #install_dirpath = 'etc/dlmodels/{}'.format(model_dirname)
-    #cmd = ''
-    #subprocess.call(cmd, shell=True)
+        for filepath in meta['config']:
+            f.write('{config} {pkgdir}/assets\n'.format(
+                config=filepath,
+                pkgdir=package_dirpath))
 
 
 def build_debian_binary_package():
@@ -60,7 +57,6 @@ def main():
     parser.add_argument('modeldir_path', help='DL model directory path')
     args = parser.parse_args()
 
-    #work_dirpath = os.path.dirname(args.modeldir_path)
     work_dirpath = os.path.abspath(args.modeldir_path)
     model_name, model_version = os.path.basename(args.modeldir_path).split('-')
 
