@@ -58,7 +58,9 @@ def main():
     args = parser.parse_args()
 
     work_dirpath = os.path.abspath(args.modeldir_path)
-    model_name, model_version = os.path.basename(args.modeldir_path).split('-')
+    dirname_components = os.path.basename(args.modeldir_path).split('-')
+    model_name = '-'.join(dirname_components[:-1])
+    model_version = dirname_components[-1]
 
     os.chdir(work_dirpath)
     create_debianization()
