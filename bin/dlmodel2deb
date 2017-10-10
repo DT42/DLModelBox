@@ -41,9 +41,9 @@ def create_install(work_dirpath):
             pkgdir=package_dirpath))
 
         # add config(s)
-        for filepath in meta['config']:
+        for k, v in meta['config'].items():
             f.write('{config} {pkgdir}/assets\n'.format(
-                config=filepath,
+                config=v,
                 pkgdir=package_dirpath))
 
 
