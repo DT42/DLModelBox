@@ -32,6 +32,11 @@ def get_sha256(filepath):
 
 
 def get_meta():
+    """Get metadata from user via CLI.
+
+    :return: metadata in JSON structure
+    :rtype: dict
+    """
     inference_engine_names = {
         1: 'tensorflow',
         2: 'keras',
@@ -46,15 +51,16 @@ def get_meta():
     # target package directory.  They will be updated to relative paths
     # in the model package.
     meta = {}
-    config_files = []
+    config_files = {}
     meta['name'] = input('Package name: ')
     meta['version'] = input('Package version: ')
     meta['model'] = os.path.abspath(input('Model filepath: '))
     meta['label'] = os.path.abspath(input('Label filepath: '))
     while True:
-        config_file = input('Config filepath (press enter directly to stop): ')
-        if len(config_file) != 0:
-            config_files.append(os.path.abspath(config_file))
+        key = input('Config name (press enter directly to stop): ')
+        if len(key) != 0:
+            value = os.path.abspath(input('Config filepath: '))
+            config_files[key] = value
         else:
             break
     meta['config'] = config_files
@@ -77,9 +83,9 @@ def create_metafile(meta, package_dirpath):
     for cksum_key in ['model', 'label']:
         target_path = os.path.join(package_dirpath, meta[cksum_key])
         checksums[meta[cksum_key]] = get_sha256(target_path)
-    for config in meta['config']:
-        target_path = os.path.join(package_dirpath, config)
-        checksums[config] = get_sha256(target_path)
+    for k, v in meta['config'].items():
+        target_path = os.path.join(package_dirpath, v)
+        checksums[v] = get_sha256(target_path)
     meta['checksums-sha256'] = checksums
 
     with open(os.path.join(package_dirpath, 'meta.json'), 'w') as f:
@@ -95,15 +101,13 @@ def create_source_package(meta):
         shell=True)
     shutil.copy2(meta['model'], package_dirpath)
     shutil.copy2(meta['label'], os.path.join(package_dirpath, 'assets'))
-    for filepath in meta['config']:
-        shutil.copy2(filepath, os.path.join(package_dirpath, 'assets'))
+    for k, v in meta['config'].items():
+        shutil.copy2(v, os.path.join(package_dirpath, 'assets'))
     # update full paths to relative paths in the model package directory
     meta['model'] = os.path.basename(meta['model'])
     meta['label'] = os.path.join('assets', os.path.basename(meta['label']))
-    meta['config'] = [
-        os.path.join('assets', os.path.basename(filepath))
-        for filepath in meta['config']
-    ]
+    for k, v in meta['config'].items():
+        meta['config'][k] = os.path.join('assets', os.path.basename(v))
     # create model description file (meta.json)
     create_metafile(meta, package_dirpath)
 
