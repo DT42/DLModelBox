@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: DT42 <contact@dt42.io>
 Build-Depends: debhelper (>= 9.0.0), python3 (>= 3.4)
 Standards-Version: 3.9.7
-Homepage: http://dt42.io
+Homepage: http://github.com/DT42/DLModelBox
 
 Package: dlmodelbox
 Architecture: all
