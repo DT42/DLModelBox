@@ -1,0 +1,84 @@
+.TH "DLMODEL_SOURCE" "1" "October 2017" "DLMobelBox" "User Commands"
+
+.SH NAME
+dlmodel_source \- create a structured deep learning model directory
+
+.SH SYNOPSIS
+.B dlmodel_source
+
+.SH DESCRIPTION
+.PP
+.B dlmodel_source
+helps to create a structured deep learning (DL) model directory via CLI. Please refer to the specification section below for more details.
+.PP
+The structured directory will be created in /tmp.
+.PP
+Questions for collecting model information:
+.TP
+.RB "Package name"
+The name of the DL package, e.g. inception.
+.TP
+.RB "Package version"
+The version of the DL package, e.g. 3.
+.TP
+.RB "Modle filepath"
+Absolute or relative path of the model file.
+.TP
+.RB "Label filepath"
+Absolute or relative path of the label file.
+.TP
+.RB "Config name"
+Name of the config data source (see config filepath below). If there is not any config, leave it blank.
+.TP
+.RB "Config filepath"
+Absolute or relative path of the config file.
+.TB
+.RB "Inference engine"
+The inference engine supporting the DL model's format.
+
+.SH MODEL DIRECTORY STRUCTURE
+.PP
+Example of a structured DL model directory:
+.sp
+.nf
+    <modelname-version>
+    |-- assets
+    |   |-- labels.txt
+    |   `-- <optional-config-files>
+    |-- LICENSE    # optional currently
+    |-- meta.json
+    `-- model.pb
+.fi
+
+.SH METADATA FORMAT OF MODEL PACKAGE
+.PP
+Metadata, meta.json, describes all the details in the structured model directory.
+.PP
+Example of meta.json
+.sp
+.nf
+    # Note: model directory name is fight-detection-1.0.0
+    {
+        "name": "fight-detection",
+        "version": "1.0.0",
+        "inference-engine": "tensorflow",
+        "model": "model.pb",
+        "label": "assets/labels.txt",
+        # optional configs
+        "config": {
+            "<optional-key>": "<optional-value>",
+            "<optional-key>": "<optional-value>",
+            ...
+        },
+        "checksums-sha256": {
+            "model.pb": "<sha256sum>",
+            "assets/labels.txt": "<sha256sum>",
+            "<optional-file-path>": "<sha256sum>",
+            ...
+        }
+    }
+.fi
+
+.SH SEE ALSO
+.PP
+.BR dlmodel2deb (1)
