@@ -1,6 +1,7 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: dlmodelbox
-Source: http://dt42.io
+Upstream-Contact: https://dt42.io
+Source: https://github.com/DT42/DLModelBox
 
 Files: *
 Copyright: 2017 DT42 CO., LTD. <contact@dt42.io>
