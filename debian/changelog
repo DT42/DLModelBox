@@ -1,5 +1,6 @@
-dlmodelbox (0.1.1-2) unstable; urgency=low
+dlmodelbox (0.1.2-1) unstable; urgency=low
 
+  * Upstream updates.
   * debian/copyright:
     - Fix the Source field.
   * debian/docs:
