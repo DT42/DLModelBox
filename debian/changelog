@@ -1,6 +1,6 @@
 dlmodelbox (0.1.2-1) unstable; urgency=low
 
-  * Upstream updates.
+  * Upstream updates. (Closes: #879836)
   * debian/copyright:
     - Fix the Source field.
   * debian/docs:
