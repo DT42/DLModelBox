@@ -27,7 +27,6 @@ def get_sha256(filepath):
             if not data:
                 break
             sha256.update(data)
-    print(sha256.hexdigest())
     return sha256.hexdigest()
 
 
@@ -45,7 +44,9 @@ def get_meta():
         5: 'darknet',
         6: 'caffe',
         7: 'mxnet',
-        9: 'other'
+        8: 'movidius',
+        9: 'ONNX',
+        10: 'others'
     }
     # model, label, config are full paths for copying them into
     # target package directory.  They will be updated to relative paths
@@ -68,7 +69,9 @@ def get_meta():
         (
             'Inference engine\n'
             '\t1. TensorFlow  2. Keras  3. Caffe2  4. PyTorch\n'
-            '\t5. Darknet     6. Caffe  7. MXNet   9. Other\n'
+            '\t5. Darknet     6. Caffe  7. MXNet   8. Movidius\n'
+            '\t9. ONNX       10. Others\n'
+            '\t9. Other\n'
             ': '
         )
     ))
@@ -110,6 +113,7 @@ def create_source_package(meta):
         meta['config'][k] = os.path.join('assets', os.path.basename(v))
     # create model description file (meta.json)
     create_metafile(meta, package_dirpath)
+    print('Model source package is at ' + package_dirpath)
 
 
 def main():
