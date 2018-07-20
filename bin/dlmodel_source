@@ -100,17 +100,17 @@ def create_source_package(meta):
     package_name = meta['name'] + '-' + meta['version']
     package_dirpath = os.path.join('/tmp', package_name)
     subprocess.call(
-        'mkdir -p {pkgdir}/assets'.format(pkgdir=package_dirpath),
+        'mkdir -p {pkgdir}'.format(pkgdir=package_dirpath),
         shell=True)
     shutil.copy2(meta['model'], package_dirpath)
-    shutil.copy2(meta['label'], os.path.join(package_dirpath, 'assets'))
+    shutil.copy2(meta['label'], package_dirpath)
     for k, v in meta['config'].items():
-        shutil.copy2(v, os.path.join(package_dirpath, 'assets'))
+        shutil.copy2(v, package_dirpath)
     # update full paths to relative paths in the model package directory
     meta['model'] = os.path.basename(meta['model'])
-    meta['label'] = os.path.join('assets', os.path.basename(meta['label']))
+    meta['label'] = os.path.basename(meta['label'])
     for k, v in meta['config'].items():
-        meta['config'][k] = os.path.join('assets', os.path.basename(v))
+        meta['config'][k] = os.path.basename(v)
     # create model description file (meta.json)
     create_metafile(meta, package_dirpath)
     print('Model source package is at ' + package_dirpath)

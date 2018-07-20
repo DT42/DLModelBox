@@ -23,7 +23,7 @@ def create_install(work_dirpath):
 
     with open('debian/install', 'w') as f:
         package_name = meta['name'] + '-' + meta['version']
-        package_dirpath = os.path.join('/var/lib/dlmodels', package_name)
+        package_dirpath = os.path.join('/usr/share/dlmodels', package_name)
 
         # add meta
         f.write('{meta} {pkgdir}\n'.format(
@@ -36,13 +36,13 @@ def create_install(work_dirpath):
             pkgdir=package_dirpath))
 
         # add label
-        f.write('{label} {pkgdir}/assets\n'.format(
+        f.write('{label} {pkgdir}\n'.format(
             label=meta['label'],
             pkgdir=package_dirpath))
 
         # add config(s)
         for k, v in meta['config'].items():
-            f.write('{config} {pkgdir}/assets\n'.format(
+            f.write('{config} {pkgdir}\n'.format(
                 config=v,
                 pkgdir=package_dirpath))
 
