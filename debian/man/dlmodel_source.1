@@ -42,12 +42,11 @@ Example of a structured DL model directory:
 .sp
 .nf
     <modelname-version>
-    |-- assets
-    |   |-- labels.txt
-    |   `-- <optional-config-files>
+    |-- <model-file>
+    |-- <label-file>
+    |-- <optional-config-files>
     |-- LICENSE    # optional currently
-    |-- meta.json
-    `-- model.pb
+    `-- meta.json
 .fi
 
 .SH METADATA FORMAT OF MODEL PACKAGE
@@ -63,7 +62,7 @@ Example of meta.json
         "version": "1.0.0",
         "inference-engine": "tensorflow",
         "model": "model.pb",
-        "label": "assets/labels.txt",
+        "label": "labels.txt",
         # optional configs
         "config": {
             "<optional-key>": "<optional-value>",
@@ -72,7 +71,7 @@ Example of meta.json
         },
         "checksums-sha256": {
             "model.pb": "<sha256sum>",
-            "assets/labels.txt": "<sha256sum>",
+            "labels.txt": "<sha256sum>",
             "<optional-file-path>": "<sha256sum>",
             ...
         }
