@@ -46,7 +46,8 @@ def get_meta():
         7: 'mxnet',
         8: 'movidius',
         9: 'ONNX',
-        10: 'others'
+        10: 'OpenVINO',
+        11: 'others'
     }
     # model, label, config are full paths for copying them into
     # target package directory.  They will be updated to relative paths
@@ -68,10 +69,9 @@ def get_meta():
     engine_index = int(input(
         (
             'Inference engine\n'
-            '\t1. TensorFlow  2. Keras  3. Caffe2  4. PyTorch\n'
-            '\t5. Darknet     6. Caffe  7. MXNet   8. Movidius\n'
-            '\t9. ONNX       10. Others\n'
-            '\t9. Other\n'
+            '\t1. TensorFlow   2. Keras      3. Caffe2  4. PyTorch\n'
+            '\t5. Darknet      6. Caffe      7. MXNet   8. Movidius\n'
+            '\t9. ONNX        10. OpenVINO  11. Others\n'
             ': '
         )
     ))
