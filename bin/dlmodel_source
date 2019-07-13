@@ -37,16 +37,16 @@ def get_meta():
     :rtype: dict
     """
     inference_engine_names = {
-        1: 'tensorflow',
-        2: 'keras',
-        3: 'caffe2',
-        4: 'pytorch',
-        5: 'darknet',
-        6: 'caffe',
+        1: 'tflite',
+        2: 'openvino',
+        3: 'darknet',
+        4: 'tensorflow',
+        5: 'pytorch',
+        6: 'keras',
         7: 'mxnet',
-        8: 'movidius',
-        9: 'ONNX',
-        10: 'OpenVINO',
+        8: 'caffe2',
+        9: 'caffe',
+        10: 'movidius',
         11: 'others'
     }
     # model, label, config are full paths for copying them into
@@ -69,9 +69,17 @@ def get_meta():
     engine_index = int(input(
         (
             'Inference engine\n'
-            '\t1. TensorFlow   2. Keras      3. Caffe2  4. PyTorch\n'
-            '\t5. Darknet      6. Caffe      7. MXNet   8. Movidius\n'
-            '\t9. ONNX        10. OpenVINO  11. Others\n'
+            '\t 1. TFLite\n'
+            '\t 2. OpenVINO\n'
+            '\t 3. Darknet\n'
+            '\t 4. TensorFlow\n'
+            '\t 5. PyTorch\n'
+            '\t 6. Keras\n'
+            '\t 7. MXNet\n'
+            '\t 8. Caffe2\n'
+            '\t 9. Caffe\n'
+            '\t10. Movidius\n'
+            '\t11. Others\n'
             ': '
         )
     ))
