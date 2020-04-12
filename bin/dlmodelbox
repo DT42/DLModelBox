@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+
+import apt
+import apt_pkg
+import os
+import subprocess
+import argparse
+
+def printMetaFile(packagename):
+    cache=apt.cache.Cache()
+    
+    for i in cache[packagename].installed_files:
+        if (i.endswith('meta.json')):
+            metafile = open(i, 'r')
+
+            line = metafile.readline()
+            while line != '':
+                print(line, end='')
+                line = metafile.readline()
+    pass
+
+def getListOfModelPackages():
+    ret = []
+    basedir = os.path.join(os.path.sep, 'usr', 'share', 'dlmodels')
+    entries = os.listdir(basedir)
+
+    for entry in entries:
+        fullpath = os.path.join(basedir, entry)
+        if (os.path.isdir(fullpath)):
+            dpkgResult1 = subprocess.run(["dpkg", "-S", fullpath],
+                                         capture_output=True)
+            dpkgResult1Stdout = dpkgResult1.stdout.decode('utf-8')
+            dpkgResult1Parsed = dpkgResult1Stdout.split(':')
+            if (len(dpkgResult1Parsed) != 2):
+                continue
+            packagename = dpkgResult1Parsed[0]
+            ret.append(packagename)
+    return ret
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("command", help="Command")
+    parser.add_argument("args", help="Arguments", nargs='*')
+    args = parser.parse_args()
+
+    command1 = getattr(args, "command")
+    args1 = getattr(args, "args")
+    if (command1 == "ls" and len(args1)==0):
+        packages = getListOfModelPackages()
+        for package in packages:
+            print(package)
+    elif (command1 == "ls" and len(args1)==1):
+        packagename = args1[0]
+        printMetaFile(packagename)
+    pass
